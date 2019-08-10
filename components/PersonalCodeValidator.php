@@ -5,7 +5,6 @@ use yii\validators\Validator;
 
 class PersonalCodeValidator extends Validator
 {
-    // const another_regex = '/^[1-6][0-9]{2}[0-1][0-9][0-9]{2}[0-9]{4}$/';
     const CODE_REGEX = '/^[1-6](0\d{1}|[1-9]\d{1})(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{4}$/';
 
     public function validateAttribute($model, $attribute)
@@ -21,7 +20,7 @@ class PersonalCodeValidator extends Validator
             if (!checkdate($this->getMonthOfBirth($iskukood), $this->getDayOfBirth($iskukood), $this->getYearOfBirth($iskukood))) {
                 throw new InvalidDateException($iskukood . ' has invalid birthdate!');
             }
-            
+
         } catch (\Exception $exception) {
             $this->addError($model, $attribute, $exception->getMessage().'Invalid personal code.');
         }
