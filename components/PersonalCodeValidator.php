@@ -2,6 +2,7 @@
 namespace app\components;
 
 use yii\validators\Validator;
+use Exception;
 
 class PersonalCodeValidator extends Validator
 {
@@ -10,18 +11,17 @@ class PersonalCodeValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $iskukood = $model->$attribute;
-        
         try {
             if( !$this->isValidatedByRegex($iskukood) ) {
-                throw new \Exception($iskukood . ' has an invalid format!');
-            }
-            
-            // Check if the birth date is a valid date. Leap years are taken into consideration.
-            if (!checkdate($this->getMonthOfBirth($iskukood), $this->getDayOfBirth($iskukood), $this->getYearOfBirth($iskukood))) {
-                throw new \Exception($iskukood . ' has invalid birthdate!');
+                throw new Exception($iskukood . ' has an invalid format!');
             }
 
-        } catch (\Exception $exception) {
+            // Check if the birth date is a valid date. Leap years are taken into consideration.
+            if (!checkdate($this->getMonthOfBirth($iskukood), $this->getDayOfBirth($iskukood), $this->getYearOfBirth($iskukood))) {
+                throw new Exception($iskukood . ' has invalid birthdate!');
+            }
+
+        } catch (Exception $exception) {
             $this->addError($model, $attribute, $exception->getMessage());
         }
     }
@@ -32,30 +32,30 @@ class PersonalCodeValidator extends Validator
      * Use this only to pre-validate the format of the Personal Identification Code.
      * 
      * 
-     * @param type $pin Estonian Personal Identification Code.
+     * @param type $code Estonian Personal Identification Code.
      * @return bool True if Estonian Personal Identification Code matches the 
      * regular expression, false otherwise.
      */
-    public function isValidatedByRegex($pin): bool 
+    public function isValidatedByRegex($code): bool 
     {
-        return is_string($pin) && preg_match(self::CODE_REGEX, $pin);
+        return is_string($code) && preg_match(self::CODE_REGEX, $code);
     }
 
     /**
      * Get the person's date of birth as PHP DateTime object by Personal Identification Code.
      * 
-     * @param type $pin Estonian Personal Identification Code.
+     * @param type $code Estonian Personal Identification Code.
      * @return \DateTime The date of birth as PHP DateTime object.
-     * @throws InvalidPersonalIdentificationNrException
+     * @throws Exception
      * If validation of Personal Identification Code fails.
      */
-    public function getBirthDateAsDatetimeObj($pin): \DateTime 
+    public function getBirthDateAsDatetimeObj($code): \DateTime 
     {
-        if (!$this->validate($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
         $dateOfBirth = sprintf(
-                '%d.%d.%d', $this->getMonthOfBirth($pin), $this->getDayOfBirth($pin), $this->getYearOfBirth($pin)
+                '%d.%d.%d', $this->getMonthOfBirth($code), $this->getDayOfBirth($code), $this->getYearOfBirth($code)
         );
         return \Datetime::createFromFormat('m.d.Y', $dateOfBirth);
     }
@@ -64,16 +64,16 @@ class PersonalCodeValidator extends Validator
      * Get the person's current age as PHP DateInterval object.
      * Note that DateInterval calculation precision depends on timezone set in php.ini.
      * 
-     * @param type $pin Estonian Personal Identification Code.
+     * @param type $code Estonian Personal Identification Code.
      * @return \DateInterval The current age as PHP DateInterval object.
-     * @throws InvalidPersonalIdentificationNrException
+     * @throws Exception
      * If validation of Personal Identification Code fails.
      */
-    public function getCurrentAgeByPIN($pin): \DateInterval {
-        if (!$this->isValidatedByRegex($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+    public function getCurrentAgeByCode($code): \DateInterval {
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
-        $birthDay = $this->getBirthDateAsDatetimeObj($pin);
+        $birthDay = $this->getBirthDateAsDatetimeObj($code);
         $now = new \Datetime('now');
         return $now->diff($birthDay);
     }
@@ -81,33 +81,33 @@ class PersonalCodeValidator extends Validator
     /**
      * Get the person's date of birth as PHP DateTime object by Personal Identification Code.
      * 
-     * @param type $pin Estonian Personal Identification Code.
+     * @param type $code Estonian Personal Identification Code.
      * @return \DateTime The date of birth as PHP DateTime object.
-     * @throws InvalidPersonalIdentificationNrException
+     * @throws Exception
      * If validation of Personal Identification Code fails.
      */
-    public function getCurrentAgeInYearsByPIN($pin): int {
-        if (!$this->isValidatedByRegex($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+    public function getCurrentAgeInYearsByCode($code): int {
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
-        return $this->getCurrentAgeByPIN($pin)->y;
+        return $this->getCurrentAgeByCode($code)->y;
     }
     
     /**
      * Get the century of the persons birth date by Personal Identification Code.
      * 
-     * @param string $pin Estonian Personal Identification Code.
+     * @param string $code Estonian Personal Identification Code.
      * @return int The century when the person was born eg. 1900, 2000 etc
-     * @throws \Lkallas\Exceptions\InvalidPersonalIdentificationNrException 
+     * @throws \Lkallas\Exceptions\Exception 
      * If validation of Personal Identification Code fails.
      */
-    public function getBirthCentury($pin): int 
+    public function getBirthCentury($code): int 
     {
-        if (!$this->isValidatedByRegex($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
         $century = 0;
-        $centuryIdentificator = (int) substr($pin, 0, 1);
+        $centuryIdentificator = (int) substr($code, 0, 1);
         if ($centuryIdentificator < 3) {
             $century = 1800;
         } elseif ($centuryIdentificator > 2 && $centuryIdentificator < 5) {
@@ -121,50 +121,50 @@ class PersonalCodeValidator extends Validator
      /**
      * Get the person's year of birth by Personal Identification Code.
      * 
-     * @param string $pin Estonian Personal Identification Code.
+     * @param string $code Estonian Personal Identification Code.
      * @return int The year when the person was born.
-     * @throws InvalidPersonalIdentificationNrException 
+     * @throws Exception 
      * If validation of Personal Identification Code fails.
      */
-    public function getYearOfBirth($pin): int 
+    public function getYearOfBirth($code): int 
     {
-        if (!$this->isValidatedByRegex($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
-        $year = (int) ltrim(substr($pin, 1, 2), '0');
-        $century = $this->getBirthCentury($pin);
+        $year = (int) ltrim(substr($code, 1, 2), '0');
+        $century = $this->getBirthCentury($code);
         return $year + $century;
     }
     
     /**
      * Get the person's month of birth by Personal Identification Code.
      * 
-     * @param type $pin Estonian Personal Identification Code.
+     * @param type $code Estonian Personal Identification Code.
      * @return int The month when the person was born.
-     * @throws InvalidPersonalIdentificationNrException
+     * @throws Exception
      * If validation of Personal Identification Code fails.
      */
-    public function getMonthOfBirth($pin): int 
+    public function getMonthOfBirth($code): int 
     {
-        if (!$this->isValidatedByRegex($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
-        return (int) ltrim(substr($pin, 3, 2), '0');
+        return (int) ltrim(substr($code, 3, 2), '0');
     }
 
     /**
      * Get the person's day of birth by Estonian Personal Identification Code.
      * 
-     * @param type $pin Estonian Personal Identification Code.
+     * @param type $code Estonian Personal Identification Code.
      * @return int The day when the person was born.
-     * @throws InvalidPersonalIdentificationNrException
+     * @throws Exception
      * If validation of Personal Identification Code fails.
      */
-    public function getDayOfBirth($pin): int 
+    public function getDayOfBirth($code): int 
     {
-        if (!$this->isValidatedByRegex($pin)) {
-            throw new InvalidPersonalIdentificationNrException('Invalid Personal Identification Code format!');
+        if (!$this->isValidatedByRegex($code)) {
+            throw new Exception('Invalid Personal Identification Code format!');
         }
-        return (int) ltrim(substr($pin, 5, 2), '0');
+        return (int) ltrim(substr($code, 5, 2), '0');
     }
 }
