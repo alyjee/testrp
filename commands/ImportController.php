@@ -11,6 +11,12 @@ use app\helpers\ImportHelper;
  */
 class ImportController extends Controller
 {
+    /**
+     * [[actionIndex()]] function to import data from JSON file into database tables.
+     * @param string $model
+     * @param string $file
+     * @return
+     */
     public function actionIndex($model='User', $file='users.json')
     {
         $className = 'app\\models\\'.$model;

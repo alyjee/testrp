@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "93ef58dfadddd704f428506cce4a6661",
+    "content-hash": "c2363fd78aa681b78c97f57a24d5d31e",
     "packages": [
         {
             "name": "artem-frolov/scssphp-compass",
@@ -504,6 +504,58 @@
                 "stylesheet"
             ],
             "time": "2019-06-18T21:15:44+00:00"
+        },
+        {
+            "name": "lkallas/estonianpin",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lkallas/estonianpin.git",
+                "reference": "286748ba95a6f5950d410a0726edd61550ff4578"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lkallas/estonianpin/zipball/286748ba95a6f5950d410a0726edd61550ff4578",
+                "reference": "286748ba95a6f5950d410a0726edd61550ff4578",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lkallas\\": "src/Estonianpin/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lennar Kallas",
+                    "email": "lennar@lennar.eu",
+                    "homepage": "https://lennar.eu/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library for processing Estonian Personal Identification Code (isikukood).",
+            "homepage": "http://github.com/lkallas/estonianpin",
+            "keywords": [
+                "Personal id",
+                "estonia",
+                "isikukood",
+                "national id",
+                "personal identification code",
+                "personal identification number",
+                "php",
+                "pin"
+            ],
+            "time": "2018-04-18T08:22:51+00:00"
         },
         {
             "name": "salsify/json-streaming-parser",

@@ -1,5 +1,38 @@
 [
   {
+    "id": "1",
+    "user_id": "7521",
+    "amount": "340.0000",
+    "interest": "23.0000",
+    "duration": "38",
+    "start_date": "1436313600",
+    "end_date": "1444089600",
+    "campaign": "7",
+    "status": "1"
+  },
+  {
+    "id": "2",
+    "user_id": "7521",
+    "amount": "300.0000",
+    "interest": "15.0000",
+    "duration": "30",
+    "start_date": "1436313600",
+    "end_date": "1444089600",
+    "campaign": "7",
+    "status": "1"
+  },
+  {
+    "id": "3",
+    "user_id": "7521",
+    "amount": "300.0000",
+    "interest": "15.0000",
+    "duration": "30",
+    "start_date": "1436313600",
+    "end_date": "1444089600",
+    "campaign": "7",
+    "status": "1"
+  },
+  {
     "id": "36470",
     "user_id": "7521",
     "amount": "300.0000",

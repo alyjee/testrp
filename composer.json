@@ -21,7 +21,8 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "danxill/yii2-sass": "*",
         "salsify/json-streaming-parser": "^8.0",
-        "halaxa/json-machine": "^0.3.2"
+        "halaxa/json-machine": "^0.3.2",
+        "lkallas/estonianpin": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
