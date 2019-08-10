@@ -10,19 +10,19 @@ class PersonalCodeValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $iskukood = $model->$attribute;
-        if( !$this->isValidatedByRegex($iskukood) ) {
-            $this->addError($model, $attribute, 'Invalid format for personal code.');
-            return;
-        }
         
         try {
+            if( !$this->isValidatedByRegex($iskukood) ) {
+                throw new \Exception($iskukood . ' has an invalid format!');
+            }
+            
             // Check if the birth date is a valid date. Leap years are taken into consideration.
             if (!checkdate($this->getMonthOfBirth($iskukood), $this->getDayOfBirth($iskukood), $this->getYearOfBirth($iskukood))) {
-                throw new InvalidDateException($iskukood . ' has invalid birthdate!');
+                throw new \Exception($iskukood . ' has invalid birthdate!');
             }
 
         } catch (\Exception $exception) {
-            $this->addError($model, $attribute, $exception->getMessage().'Invalid personal code.');
+            $this->addError($model, $attribute, $exception->getMessage());
         }
     }
 
