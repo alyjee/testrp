@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\PersonalCodeValidator;
+use app\helpers\PersonalCodeHelper;
 use Yii;
 
 /**
@@ -22,11 +23,7 @@ use Yii;
  */
 class User extends \yii\db\ActiveRecord
 {
-    /** @var integer */
-    private $age;
-
-    /** @var \DateTime */
-    private $birthDate;
+    use PersonalCodeHelper;
 
     /**
      * {@inheritdoc}
@@ -70,44 +67,25 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Calculates age by personal code
+     * Virtual Attribute - Getter for age
      *
      * @return int
      */
     public function getAge()
     {
-        if ($this->age) {
-            return $this->age;
-        }
-
-        $this->age = $this->getBirthDate()->diff(new \DateTime())->y;
-
-        return $this->age;
+        $code = strval($this->personal_code);
+        return $this->getCurrentAgeInYearsByCode($code);
     }
 
     /**
-     * Calculate birth date by personal code
+     * Virtual Attribute - Getter for birthdate
      *
      * @return \DateTime
      */
     public function getBirthDate()
     {
-        if ($this->birthDate) {
-            return $this->birthDate;
-        }
-
-        $centuryCode = substr($this->personal_code, 0, 1);
-        if ($centuryCode < 3) {
-            $century = 19;
-        } elseif ($centuryCode < 5) {
-            $century = 20;
-        } else {
-            $century = 21;
-        }
-
-        $this->birthDate = new \DateTime(($century - 1) . substr($this->personal_code, 1, 6));
-
-        return $this->birthDate;
+        $code = strval($this->personal_code);
+        return $this->getBirthDateAsDatetimeObj($code);
     }
 
     /**
@@ -117,7 +95,7 @@ class User extends \yii\db\ActiveRecord
      */
     public function isAllowedToApplyLoan()
     {
-        return $this->getAge() >= 18;
+        return $this->age >= 18;
     }
 
     /**
