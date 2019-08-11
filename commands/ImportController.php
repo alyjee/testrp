@@ -11,6 +11,8 @@ use app\helpers\ImportHelper;
  */
 class ImportController extends Controller
 {
+    use ImportHelper;
+
     /**
      * [[actionIndex()]] function to import data from JSON file into database tables.
      * @param string $model
@@ -26,16 +28,16 @@ class ImportController extends Controller
         $baseTable = $modelInstance->getTableSchema()->fullName;
         $tmpTable =  'temp_'.$modelInstance->getTableSchema()->fullName;
 
-        ImportHelper::beforeImport($model);
+        $this->beforeImport($model);
         
-        ImportHelper::streamInsert($model, $file, $tmpTable, $columnNames);
+        $this->streamInsert($model, $file, $tmpTable, $columnNames);
         
         $selectTmp = (new Query())->select($columnNames)->from($tmpTable);
         $updateColumns = true;
         $params = [];
         Yii::$app->db->createCommand()->upsert($baseTable, $selectTmp, $updateColumns, $params)->execute();
         
-        ImportHelper::afterImport($tmpTable);
+        $this->afterImport($tmpTable);
         
         return;
     }

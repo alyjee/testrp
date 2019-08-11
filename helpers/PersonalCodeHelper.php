@@ -2,6 +2,12 @@
 namespace app\helpers;
 use Exception;
 
+/**
+ * PersonalCodeHelper contains the generice functions for Personal Code (iskukood) manipulation.
+ *
+ * @author Tahir Raza <tahirraza.se@gmail.com>
+ * @since 2.0
+ */
 trait PersonalCodeHelper {
 
     private static $CODE_REGEX = '/^[1-6](0\d{1}|[1-9]\d{1})(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{4}$/';

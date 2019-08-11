@@ -10,7 +10,7 @@ use \JsonMachine\JsonMachine;
  * @author Tahir Raza <tahirraza.se@gmail.com>
  * @since 2.0
  */
-class ImportHelper
+trait ImportHelper
 {
     /**
      * [[streamInsert()]] function to fill table with JSON data via stream.
@@ -20,13 +20,13 @@ class ImportHelper
      * @param array $columnNames
      * @return bool
      */
-    public static function streamInsert($model, $file, $table, $columnNames)
+    public function streamInsert($model, $file, $table, $columnNames)
     {
         // Read the json file with stream
         $rows = JsonMachine::fromFile(Yii::$app->basePath.'/'.$file);
         $userData = [];
         foreach ($rows as $id => $row) {
-            ImportHelper::preProcess($model, $row);
+            $this->preProcess($model, $row);
             if( count($userData) < 500){
                 $userData[] = $row;
             } else {
@@ -60,7 +60,7 @@ class ImportHelper
      * @param string $model
      * @return bool
      */
-    public static function beforeImport($model)
+    public function beforeImport($model)
     {
         $className = 'app\\models\\'.$model;
         $modelInstance = new $className();
@@ -96,7 +96,7 @@ class ImportHelper
      * @param string $table
      * @return bool
      */
-    public static function afterImport($table)
+    public function afterImport($table)
     {
         return Yii::$app->db->createCommand("DROP TABLE IF EXISTS $table")->execute();
     }
@@ -107,7 +107,7 @@ class ImportHelper
      * @param array $row
      * @return bool
      */
-    public static function preProcess($model, &$row)
+    public function preProcess($model, &$row)
     {
         switch ($model) {
             case 'Loan':
